@@ -1,12 +1,15 @@
 ---
 title: "Psychological Distress & Sleep Disturbance: Anticipation of racism as an effect magnifier"
 author: "Amanda D. Perez & Amani M. Allen"
+location: ""
 format: html
 theme: cyborg
 editor: visual
 ---
 
 ## Abstract
+
+#call out not working
 
 ::: callout-note
 ## **Anticipating racism** intensifies the negative effect of psychological distress on **trouble sleeping**
