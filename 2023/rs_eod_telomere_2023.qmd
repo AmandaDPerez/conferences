@@ -1,0 +1,236 @@
+---
+title: "Examining the Interaction of Anticipatory Racism Threat and Racial Discrimination on Mental Health among African American Women"
+author: "Amanda D. Perez - UC Berkeley, Tyan Parker-Dominguez - USC, Thu T. Nguyen - University of Maryland, David H. Chae - Tulane, Amani M. Allen - UC Berkeley"
+format:
+  html:
+    toc: true
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, 
+                      message = FALSE)
+library(survey)
+library(tidyverse)
+library(psych)
+library(sjPlot)
+library(Hmisc)
+library(kableExtra)
+library(corrplot)
+library(interactions)
+library(reghelper)
+mydata <- read.csv("C:/Users/amand/Dropbox/HEARTs/AAWHHS/aRT-Sleep/Data/cleaned_yougov.csv")
+```
+
+## Abstract
+
+::: callout-note
+## **Anticipating racism** significantly impacts the effect of racial discrimination on **mental health**
+:::
+
+The majority of studies examining the stress-health association focus on either the activation of or recovery from a stress experience. Perseverative cognition (PC)--repeated or chronic activation of a psychological stressor absent of an active stimulus--has been proposed as a core cognitive-emotional process linking psychological states to health. PC is central to cognitive-emotional states such as worry (about future stressors) and rumination (about past stressors) which centers prolonged psycho-physiologic stress activation as the primary mechanism underlying the stress-health relationship. Whereas numerous studies have investigated the stress-health links involving rumination, few have investigated the stress-health dynamics of anticipatory stress. We examined the interaction of each of five Anticipatory Racism Threat subscales (awareness/expectation, racism-related worry, race consciousness, stereotype awareness, confirmation concern/avoidance, 𝛼=.71-.93) with self-reported lifetime racial discrimination on three mental health outcomes : psychological distress (Kessler-6 (K6)), perceived stress (Cohen's perceived stress scale (PSS)), and anxiety (Hospital anxiety subscale (HADS)). Data are from a nationally representative panel of 615 African American women ages 25-64 in the US. We performed adjusted weighted multivariable regression and found significant interactions for 3 of 5 subscales. Across all outcomes, when racial discrimination is high, confirmation concern/avoidance is protective; but is harmful when racial discrimination is low (p \< 0.05). Racism-related worry and race consciousness, on the other hand, are protective when racial discrimination is low (p \< 0.05). Our findings highlight anticipatory racism threat as an important component of the stress process for future investigation into the stress-health association among African American women.
+
+## Tables
+
+**Demographic Table**
+
+|                   |           |           |
+|-------------------|-----------|-----------|
+| Term              | N         | \%        |
+| **Age (M, SD)**   | **50.39** | **10.81** |
+| **\< HS Diploma** | **180**   | **29.27** |
+| **Not Employed**  | **244**   | **2.14**  |
+| **Not Married**   | **221**   | **64.07** |
+
+**Exposures and Outcomes**
+
+|                                   |           |          |           |
+|-----------------------------------|-----------|----------|-----------|
+| Term                              | Mean      | SD       | Range     |
+| **aRT Confirmation Concern**      | **14.67** | **4.99** | **5-25**  |
+| **aRT Stereotype Awareness**      | **15.30** | **7.59** | **6-30**  |
+| **aRT Racism Related Worry**      | **13.31** | **4.22** | **5-25**  |
+| **aRT Race Consciousness**        | **13.89** | **4.90** | **5-25**  |
+| **aRT Awareness/Expectation**     | **29.28** | **7.18** | **8-40**  |
+| **Experiences of Discrimination** | **19.59** | **9.17** | **9-45**  |
+| **Neuroticism**                   | **2.68**  | **.89**  | **1-5**   |
+| **K6**                            | **12.04** | **5.64** | **6-30**  |
+| **PSS**                           | **26.57** | **7.82** | **10-46** |
+| **HADS**                          | **18.61** | **4.64** | **12-33** |
+
+## aRT 
+
+|                                                                                                                                                                       |                                                                                                                                                                                                              |                                                                                  |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| Cognitive                                                                                                                                                             | Affective                                                                                                                                                                                                    | Behavioral                                                                       |
+| **Constant awareness of: stereotypes and judgments, meaning making, rumination, and anticipation of being stereotyped both in obvious and more ambiguous situations** | **Worry, fear of judgment & discriminatory treatment, concern about threats to one\'s self-concept as well as threats to the group as a whole, and concern about confirming stereotypes about one\'s group** | **Avoidance Behavior: Avoiding situations altogether and impression management** |
+
+|                               |                                                                                                  |
+|------------------------------------------------|------------------------|
+| aRT Term                      | Example Item                                                                                     |
+| **aRT Confirmation Concern**  | **\"Sometimes I speak more proper so that I am not negatively stereotyped because of my race\"** |
+| **aRT Stereotype Awareness**  | **In general, people assume that Blacks are lazy**                                               |
+| **aRT Racism Related Worry**  | **I often think about whether or not people are making assumptions about me because I am Black** |
+| **aRT Race Consciousness**    | **I think about my race all the time, everywhere I go**                                          |
+| **aRT Awareness/Expectation** | **"On a day-to-day basis, I expect to deal with certain things just because I'm Black"**         |
+
+## aRT Reliability
+
+*cc = confirmation concern, sa = stereotype awareness, aware = awareness/expectation, rrw = racism related worry, rc = race consciousless*
+
+```{r}
+keys.list <- list(cc= c('Q9_13', 'Q12_19', 'Q12_8', 'Q24_3', 'Q12_26'),
+              sa = c('Q16_9', 'Q16_2', 'Q16_3', 'Q16_4', 'Q16_5', 'Q16_12'),
+              aware = c('Q26_3' ,'Q12_12', 'Q12_6', 'Q12_23',  'Q12_5', 'Q26_2', 'Q26_5', 'Q26_1'),
+              rrw = c('Q22_12', 'Q12_10', 'Q22_2', 'Q26_4', 'Q22_8'),
+              rc = c('Q26_16', 'Q26_20', 'Q26_8', 'Q26_17', 'Q22_11')
+               )
+
+scores <- scoreItems(keys.list, mydata, min = 1, max = 5, 
+                     totals = TRUE)  
+summary(scores, short = F)
+```
+
+## Analyses
+
+We ran 3 weighted linear regressions, one for each outcome.
+
+*K6 = Kessler 6, PSS = perceived stress scale, HADS = hospital anxiety subscale, EOD = experiences of discrimination*
+
+```{r, warning = F, message = F, include = F}
+## Running Model
+### Setting up weighted survey design
+post_design <- svydesign(ids = ~ 1, # no clusters  
+                         probs = NULL, #no cluster sampling probabilities
+                         weights = ~weight, data = mydata)
+```
+
+```{r}
+output.1 <- svyglm(K6 ~ EOD + aRT_cc*EOD + aRT_sa*EOD + aRT_rrw*EOD + aRT_rc*EOD + aRT_aware*EOD +
+                   Neuro + age + employ_dichot + educ_dichot +
+                   mar_dichot + faminc,
+          family = gaussian(),
+          data   = mydata,
+          design = post_design)
+
+output.2 <- svyglm(PSS ~ EOD + aRT_cc*EOD + aRT_sa*EOD + aRT_rrw*EOD + aRT_rc*EOD + aRT_aware*EOD +
+                   Neuro + age + employ_dichot + educ_dichot +
+                   mar_dichot + faminc,
+          family = gaussian(),
+          data   = mydata,
+          design = post_design)
+
+output.3 <- svyglm(HADS ~ EOD + aRT_cc*EOD + aRT_sa*EOD + aRT_rrw*EOD + aRT_rc*EOD + aRT_aware*EOD +
+                   Neuro + age + employ_dichot + educ_dichot +
+                   mar_dichot + faminc + EOD,
+          family = gaussian(),
+          data   = mydata,
+          design = post_design)
+
+sjPlot::tab_model(output.1, output.2, output.3, df.method = "wald", show.intercept = F,
+                  show.r2 = F, show.obs = F, show.ci = FALSE,
+                  pred.labels = c("EOD", "Confirmation Concern",
+                                  "Stereotype Awareness",
+                                  "Racism-Related Worry",
+                                  "Race Consciousness",
+                                  "Awareness/Expectation",
+                                  "Neuroticism",
+                                  "Age",
+                                  "Employed",
+                                  "Education",
+                                  "Marital Status",
+                                  "Family Income",
+                                  "EOD*CC", "EOD*SA", "EOD*RRW",
+                                  "EOD*RC", "EOD*Aware/Expect"),
+                  dv.labels = c("K6", "PSS", "HADS"))
+```
+
+## Visuals
+
+
+```{r}
+#windowsFonts()
+windowsFonts("TT Times New Roman" = windowsFont("TT Times New Roman"))
+
+##custom theme
+theme_perez <- function() {
+    ggplot2::theme_bw() +
+    ggplot2::theme(
+      axis.text = element_text(colour = "black",  family = "TT Times New Roman", size = 21),
+    axis.title = element_text(colour = "black", family = "TT Times New Roman", size = 23),
+    legend.title = element_text(colour = "black", family = "TT Times New Roman", size = 23),
+    legend.text = element_text(colour = "black", family = "TT Times New Roman", size = 23),
+    plot.title = element_text(colour = "black", family = "TT Times New Roman", size = 23,face = "bold"),
+    plot.subtitle = element_text(colour = "black", family = "TT Times New Roman", size = 23),
+    legend.position="right"
+      )
+}
+
+```
+
+```{r}
+library(RColorBrewer)
+pal <- c("orange", "#0c2c84")
+```
+
+### Confirmation Concern
+
+```{r}
+
+
+interact_plot(output.1, modx = aRT_cc, pred = EOD, modx.values = "plus-minus", colors = c("Black", "Black"), color.class = pal, legend.main = "Confirmation \nConcern",
+              x.label = "EOD", modx.labels = c("Low", "High")) + theme_perez()  
+  
+
+```
+
+```{r}
+
+
+interact_plot(output.2, modx = aRT_cc, pred = EOD, modx.values = "plus-minus", colors = c("Black", "Black"), color.class = pal, legend.main = "Confirmation \nConcern",
+              x.label = "EOD", modx.labels = c("Low", "High")) + theme_perez()  
+  
+
+```
+
+```{r}
+
+
+interact_plot(output.3, modx = aRT_cc, pred = EOD, modx.values = "plus-minus", colors = c("Black", "Black"), color.class = pal, legend.main = "Confirmation \nConcern",
+              x.label = "EOD", modx.labels = c("Low", "High")) + theme_perez()  
+  
+
+```
+
+
+### Racism Related Worry
+
+```{r}
+
+
+interact_plot(output.2, modx = aRT_rrw, pred = EOD, modx.values = "plus-minus", colors = c("Black", "Black"), color.class = pal, legend.main = "Racism \nRelated \nWorry",
+              x.label = "EOD", modx.labels = c("Low", "High")) + theme_perez()  
+  
+
+```
+
+### Race Consciousness
+
+```{r}
+
+
+interact_plot(output.1, modx = aRT_rc, pred = EOD, modx.values = "plus-minus", colors = c("Black", "Black"), color.class = pal, legend.main = "Race \nConsciousness",
+              x.label = "EOD", modx.labels = c("Low", "High")) + theme_perez()  
+  
+
+```
+
+```{r}
+
+
+interact_plot(output.3, modx = aRT_rc, pred = EOD, modx.values = "plus-minus", colors = c("Black", "Black"), color.class = pal, legend.main = "Race \nConsciousness",
+              x.label = "EOD", modx.labels = c("Low", "High")) + theme_perez()  
+  
+
+```
+
