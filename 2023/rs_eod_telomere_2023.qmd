@@ -1,154 +1,115 @@
 ---
-title: "Examining the Interaction of Anticipatory Racism Threat and Racial Discrimination on Mental Health among African American Women"
-author: "Amanda D. Perez - UC Berkeley, Tyan Parker-Dominguez - USC, Thu T. Nguyen - University of Maryland, David H. Chae - Tulane, Amani M. Allen - UC Berkeley"
+title: "Examining the Moderating Effect of Rejection Sensitivity on the Relationship between Discrimination and Telomere Length in African American Women"
+author: "Amanda D. Perez - UC Berkeley, Tyan Parker-Dominguez - USC, Amani M. Allen - UC Berkeley"
 format:
   html:
     toc: true
     theme: yeti
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, 
-                      message = FALSE)
-library(survey)
+```{r, include=FALSE, warning = F, message = F}
+library(lavaan)
 library(tidyverse)
 library(psych)
-library(sjPlot)
-library(Hmisc)
 library(kableExtra)
-library(corrplot)
+library(haven)
+library(readxl)
+library(gridExtra)
+library(misty)
+library(apaTables)
+library(jtools)
 library(interactions)
-library(reghelper)
-mydata <- read.csv("C:/Users/amand/Dropbox/HEARTs/AAWHHS/aRT-Sleep/Data/cleaned_yougov.csv")
+library(semTools)
+library(mice)
+
+load("C:/Users/Admin/Dropbox/HEARTs/RS/Imputations/2023-03-01_imputed-aawhhs-data-rs.RData")
 ```
 
 ## Abstract
 
 ::: callout-note
-## **Anticipating racism** significantly impacts the effect of racial discrimination on **mental health**
+## **Rejection sensitivity** intensifies the negative effect of racial discrimination on **physiological aging**
 :::
 
-The majority of studies examining the stress-health association focus on either the activation of or recovery from a stress experience. Perseverative cognition (PC)--repeated or chronic activation of a psychological stressor absent of an active stimulus--has been proposed as a core cognitive-emotional process linking psychological states to health. PC is central to cognitive-emotional states such as worry (about future stressors) and rumination (about past stressors) which centers prolonged psycho-physiologic stress activation as the primary mechanism underlying the stress-health relationship. Whereas numerous studies have investigated the stress-health links involving rumination, few have investigated the stress-health dynamics of anticipatory stress. We examined the interaction of each of five Anticipatory Racism Threat subscales (awareness/expectation, racism-related worry, race consciousness, stereotype awareness, confirmation concern/avoidance, 𝛼=.71-.93) with self-reported lifetime racial discrimination on three mental health outcomes : psychological distress (Kessler-6 (K6)), perceived stress (Cohen's perceived stress scale (PSS)), and anxiety (Hospital anxiety subscale (HADS)). Data are from a nationally representative panel of 615 African American women ages 25-64 in the US. We performed adjusted weighted multivariable regression and found significant interactions for 3 of 5 subscales. Across all outcomes, when racial discrimination is high, confirmation concern/avoidance is protective; but is harmful when racial discrimination is low (p \< 0.05). Racism-related worry and race consciousness, on the other hand, are protective when racial discrimination is low (p \< 0.05). Our findings highlight anticipatory racism threat as an important component of the stress process for future investigation into the stress-health association among African American women.
+Rejection sensitivity is a learned trait, formed in part from past experiences of prejudice and discrimination, that refers to the tendency of individuals to anxiously expect, readily perceive, and intensely respond to cues of rejection in social interactions. Previous research has linked higher levels of rejection sensitivity to negative health outcomes such as increased symptoms of anxiety and depression, inflammation, and higher cortisol levels. Using a nationally representative sample of 207 African American women, we examined the moderating effect of race-based and gender-based rejection sensitivity on the relationship between experiences of racial discrimination and telomere length, a marker of cellular aging and overall health. Racial discrimination was measured using the 8-item experiences of discrimination scale (𝛼=.91). Race- and gender-based rejection sensitivity were measured using the 6 item race-based rejection sensitivity scale (𝛼=.91) and 8 item gender-based rejection sensitivity scale (𝛼=.94), respectively. We found that rejection sensitivity, whether race-based (β=-0.25, p=0.045 ) or gender-based (β=-0.21, p=0.03), moderated the relationship between experiences of discrimination and telomere length. Individuals reporting low levels of either types of rejection sensitivity, and who also reported higher vs. lower racial discrimination had the longest telomere lengths. These findings highlight the importance of considering rejection sensitivity as a factor that can exacerbate the negative effects of discrimination on health outcomes, particularly in African American women who are at a higher risk for discrimination and related health disparities.
+
+*Contact: adpc@berkeley.edu*
 
 ## Tables
 
 **Demographic Table**
 
-|                   |           |           |
-|-------------------|-----------|-----------|
-| Term              | N         | \%        |
-| **Age (M, SD)**   | **50.39** | **10.81** |
-| **\< HS Diploma** | **180**   | **29.27** |
-| **Not Employed**  | **244**   | **2.14**  |
-| **Not Married**   | **221**   | **64.07** |
+|                    |           |           |
+|--------------------|-----------|-----------|
+| Term               | N         | \%        |
+| **Age (M, SD)**    | **41.72** | **5.90**  |
+| **\> HS Diploma**  | **138**   | **66.67** |
+| **Not Employed**   | **93**    | **44.93** |
+| **Not Married**    | **146**   | **70.53** |
+| **Taking CV Meds** | **12**    | **5.80**  |
 
 **Exposures and Outcomes**
 
-|                                   |           |          |           |
-|-----------------------------------|-----------|----------|-----------|
-| Term                              | Mean      | SD       | Range     |
-| **aRT Confirmation Concern**      | **14.67** | **4.99** | **5-25**  |
-| **aRT Stereotype Awareness**      | **15.30** | **7.59** | **6-30**  |
-| **aRT Racism Related Worry**      | **13.31** | **4.22** | **5-25**  |
-| **aRT Race Consciousness**        | **13.89** | **4.90** | **5-25**  |
-| **aRT Awareness/Expectation**     | **29.28** | **7.18** | **8-40**  |
-| **Experiences of Discrimination** | **19.59** | **9.17** | **9-45**  |
-| **Neuroticism**                   | **2.68**  | **.89**  | **1-5**   |
-| **K6**                            | **12.04** | **5.64** | **6-30**  |
-| **PSS**                           | **26.57** | **7.82** | **10-46** |
-| **HADS**                          | **18.61** | **4.64** | **12-33** |
-
-## aRT 
-
-|                                                                                                                                                                       |                                                                                                                                                                                                              |                                                                                  |
-|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| Cognitive                                                                                                                                                             | Affective                                                                                                                                                                                                    | Behavioral                                                                       |
-| **Constant awareness of: stereotypes and judgments, meaning making, rumination, and anticipation of being stereotyped both in obvious and more ambiguous situations** | **Worry, fear of judgment & discriminatory treatment, concern about threats to one\'s self-concept as well as threats to the group as a whole, and concern about confirming stereotypes about one\'s group** | **Avoidance Behavior: Avoiding situations altogether and impression management** |
-
-|                               |                                                                                                  |
-|------------------------------------------------|------------------------|
-| aRT Term                      | Example Item                                                                                     |
-| **aRT Confirmation Concern**  | **\"Sometimes I speak more proper so that I am not negatively stereotyped because of my race\"** |
-| **aRT Stereotype Awareness**  | **In general, people assume that Blacks are lazy**                                               |
-| **aRT Racism Related Worry**  | **I often think about whether or not people are making assumptions about me because I am Black** |
-| **aRT Race Consciousness**    | **I think about my race all the time, everywhere I go**                                          |
-| **aRT Awareness/Expectation** | **"On a day-to-day basis, I expect to deal with certain things just because I'm Black"**         |
-
-## aRT Reliability
-
-*cc = confirmation concern, sa = stereotype awareness, aware = awareness/expectation, rrw = racism related worry, rc = race consciousless*
-
-```{r}
-keys.list <- list(cc= c('Q9_13', 'Q12_19', 'Q12_8', 'Q24_3', 'Q12_26'),
-              sa = c('Q16_9', 'Q16_2', 'Q16_3', 'Q16_4', 'Q16_5', 'Q16_12'),
-              aware = c('Q26_3' ,'Q12_12', 'Q12_6', 'Q12_23',  'Q12_5', 'Q26_2', 'Q26_5', 'Q26_1'),
-              rrw = c('Q22_12', 'Q12_10', 'Q22_2', 'Q26_4', 'Q22_8'),
-              rc = c('Q26_16', 'Q26_20', 'Q26_8', 'Q26_17', 'Q22_11')
-               )
-
-scores <- scoreItems(keys.list, mydata, min = 1, max = 5, 
-                     totals = TRUE)  
-summary(scores, short = F)
-```
-
-## Analyses
-
-We ran 3 weighted linear regressions, one for each outcome.
-
-*K6 = Kessler 6, PSS = perceived stress scale, HADS = hospital anxiety subscale, EOD = experiences of discrimination*
+|                                        |           |          |             |
+|----------------------------------------|-----------|----------|-------------|
+| Term                                   | Mean      | SD       | Range       |
+| **Gender-based Rejection Sensitivity** | **10.67** | **8.04** | **1-32.11** |
+| **Race-based Rejection Sensitivity**   | **10.03** | **8.70** | **1-31**    |
+| **Experiences of Discrimination**      | **19.56** | **9.18** | **8-40**    |
+| **Neuroticism**                        | **3.08**  | **0.77** | **1-5**     |
 
 ```{r, warning = F, message = F, include = F}
-## Running Model
-### Setting up weighted survey design
-post_design <- svydesign(ids = ~ 1, # no clusters  
-                         probs = NULL, #no cluster sampling probabilities
-                         weights = ~weight, data = mydata)
+#### Data Cleaning
+
+# centering variables per Yije's code
+dta_long$eod_sum_c <- misty::center(dta_long$eod_sum, type = "CWC", cluster = dta_long$.imp)
+dta_long$rs_gender_c <- misty::center(dta_long$GBRS_avg,  type = "CWC", cluster = dta_long$.imp)
+dta_long$rs_race_c <- misty::center(dta_long$RBRS_avg, type = "CWC", cluster  = dta_long$.imp)
+dta_long$sc_race_c <- misty::center(dta_long$sc_race_avg, type = "CWC", cluster = dta_long$.imp)
+dta_long$sc_gender_c <- misty::center(dta_long$sc_gender_avg, type = "CWC", cluster = dta_long$.imp)
+dta_long$rrw_c <- misty::center(dta_long$art_rrw, type = "CWC", cluster = dta_long$.imp)
+dta_long$sa_c <- misty::center(dta_long$art_stereotype_awareness, type = "CWC", cluster = dta_long$.imp)
+dta_long$cc_c <- misty::center(dta_long$art_confirmation_concern, type = "CWC", cluster = dta_long$.imp)
+
+
+dta_long$eod2 <- dta_long$eod_sum_c * dta_long$eod_sum_c
+
+dta_long$cvmeds_current <- misty::center(dta_long$cvmeds_current, type = "CWC", cluster = dta_long$.imp)
+dta_long$diabetesmedtx_current <- misty::center(dta_long$diabetesmedtx_current, type = "CWC", cluster = dta_long$.imp)
+dta_long$educ_dichot_c <- misty::center(dta_long$educ_dichot, type = "CWC", cluster = dta_long$.imp)
+dta_long$pov_c <- misty::center(dta_long$pov, type = "CWC", cluster = dta_long$.imp)
+dta_long$age_yrs_c <- misty::center(dta_long$age_yrs, type = "CWC", cluster = dta_long$.imp)
+dta_long$neurot_avg_c <- misty::center(dta_long$neurot_avg, type = "CWC", cluster = dta_long$.imp)
+dta_long$marstatus_dichot_c <- misty::center(dta_long$marstatus_dichot, type = "CWC", cluster = dta_long$.imp)
+dta_long$employ_dichot_c <- misty::center(dta_long$employ_dichot, type = "CWC", cluster = dta_long$.imp)
+
+# creating interactions
+dta_long$int_rs_sa <- dta_long$rs_race_c * dta_long$sa_c
+dta_long$int_rs_cc <- dta_long$rs_race_c * dta_long$cc_c
+dta_long$int_rs_rrw <- dta_long$rs_race_c * dta_long$rrw_c
+dta_long$int_rs_sc_race <- dta_long$rs_race_c * dta_long$sc_race_c
+dta_long$int_rs_sc_gender <- dta_long$sc_gender_c * dta_long$rs_gender_c
+dta_long$int_rs <- dta_long$rs_race_c * dta_long$rs_gender_c
+dta_long$int_race <- dta_long$rs_race_c * dta_long$eod_sum_c
+dta_long$int_gender <- dta_long$eod_sum_c * dta_long$rs_gender_c
+dta_long$int_race2 <- dta_long$rs_race_c * dta_long$eod2
+dta_long$int_gender2 <- dta_long$eod2 * dta_long$rs_gender_c
+
+#dta_long <- dta_long[dta_long$.id != 184, ] #removing outlier 
 ```
 
-```{r}
-output.1 <- svyglm(K6 ~ EOD + aRT_cc*EOD + aRT_sa*EOD + aRT_rrw*EOD + aRT_rc*EOD + aRT_aware*EOD +
-                   Neuro + age + employ_dichot + educ_dichot +
-                   mar_dichot + faminc,
-          family = gaussian(),
-          data   = mydata,
-          design = post_design)
-
-output.2 <- svyglm(PSS ~ EOD + aRT_cc*EOD + aRT_sa*EOD + aRT_rrw*EOD + aRT_rc*EOD + aRT_aware*EOD +
-                   Neuro + age + employ_dichot + educ_dichot +
-                   mar_dichot + faminc,
-          family = gaussian(),
-          data   = mydata,
-          design = post_design)
-
-output.3 <- svyglm(HADS ~ EOD + aRT_cc*EOD + aRT_sa*EOD + aRT_rrw*EOD + aRT_rc*EOD + aRT_aware*EOD +
-                   Neuro + age + employ_dichot + educ_dichot +
-                   mar_dichot + faminc + EOD,
-          family = gaussian(),
-          data   = mydata,
-          design = post_design)
-
-sjPlot::tab_model(output.1, output.2, output.3, df.method = "wald", show.intercept = F,
-                  show.r2 = F, show.obs = F, show.ci = FALSE,
-                  pred.labels = c("EOD", "Confirmation Concern",
-                                  "Stereotype Awareness",
-                                  "Racism-Related Worry",
-                                  "Race Consciousness",
-                                  "Awareness/Expectation",
-                                  "Neuroticism",
-                                  "Age",
-                                  "Employed",
-                                  "Education",
-                                  "Marital Status",
-                                  "Family Income",
-                                  "EOD*CC", "EOD*SA", "EOD*RRW",
-                                  "EOD*RC", "EOD*Aware/Expect"),
-                  dv.labels = c("K6", "PSS", "HADS"))
+```{r, warning = F, message = F, include = F}
+#dta_long <- as.data.frame(dta_long)
+dta_mids <- as.mids(dta_long, .imp = ".imp", .id = ".id")
+mice.imp <- NULL
+for(i in 1:20) {
+  mice.imp[[i]] <- mice::complete(dta_mids, action = i, inc=FALSE)  }
+#saveRDS(mice.imp, "mice.complete.rs.full.rds")
 ```
 
 ## Visuals
 
-
-```{r}
+```{r, echo = FALSE}
 #windowsFonts()
 windowsFonts("TT Times New Roman" = windowsFont("TT Times New Roman"))
 
@@ -168,69 +129,19 @@ theme_perez <- function() {
 
 ```
 
-```{r}
+```{r, echo = FALSE}
 library(RColorBrewer)
 pal <- c("orange", "#0c2c84")
 ```
 
-### Confirmation Concern
+```{r, echo = FALSE}
+fiti  <- lm(tlr ~ eod_avg * RBRS_avg + cvmeds_current + diabetesmedtx_current + educ_dichot_c + pov_c + age_yrs_c + marstatus_dichot_c + employ_dichot_c + neurot_avg_c + sc_race_c, mice.imp[[1]])
 
-```{r}
-
-
-interact_plot(output.1, modx = aRT_cc, pred = EOD, modx.values = "plus-minus", colors = c("Black", "Black"), color.class = pal, legend.main = "Confirmation \nConcern",
-              x.label = "EOD", modx.labels = c("Low", "High")) + theme_perez()  
-  
-
+interact_plot(fiti, modx = RBRS_avg, pred = eod_avg, modx.values = "plus-minus", x.label = "EOD", y.label = "rTL", modx.labels = c("Low", "High"), legend.main = "Race-Based RS", colors = pal) + theme_perez()
 ```
 
-```{r}
+```{r, echo = FALSE}
+fiti  <- lm(tlr ~ eod_avg * GBRS_avg + cvmeds_current + diabetesmedtx_current + educ_dichot_c + pov_c + age_yrs_c + marstatus_dichot_c + employ_dichot_c + neurot_avg_c + sc_gender_c, mice.imp[[1]])
 
-
-interact_plot(output.2, modx = aRT_cc, pred = EOD, modx.values = "plus-minus", colors = c("Black", "Black"), color.class = pal, legend.main = "Confirmation \nConcern",
-              x.label = "EOD", modx.labels = c("Low", "High")) + theme_perez()  
-  
-
+interact_plot(fiti, modx = GBRS_avg, pred = eod_avg, modx.values = "plus-minus", x.label = "EOD", y.label = "rTL", modx.labels = c("Low", "High"), legend.main = "Gender-Based RS",colors = pal) + theme_perez()
 ```
-
-```{r}
-
-
-interact_plot(output.3, modx = aRT_cc, pred = EOD, modx.values = "plus-minus", colors = c("Black", "Black"), color.class = pal, legend.main = "Confirmation \nConcern",
-              x.label = "EOD", modx.labels = c("Low", "High")) + theme_perez()  
-  
-
-```
-
-
-### Racism Related Worry
-
-```{r}
-
-
-interact_plot(output.2, modx = aRT_rrw, pred = EOD, modx.values = "plus-minus", colors = c("Black", "Black"), color.class = pal, legend.main = "Racism \nRelated \nWorry",
-              x.label = "EOD", modx.labels = c("Low", "High")) + theme_perez()  
-  
-
-```
-
-### Race Consciousness
-
-```{r}
-
-
-interact_plot(output.1, modx = aRT_rc, pred = EOD, modx.values = "plus-minus", colors = c("Black", "Black"), color.class = pal, legend.main = "Race \nConsciousness",
-              x.label = "EOD", modx.labels = c("Low", "High")) + theme_perez()  
-  
-
-```
-
-```{r}
-
-
-interact_plot(output.3, modx = aRT_rc, pred = EOD, modx.values = "plus-minus", colors = c("Black", "Black"), color.class = pal, legend.main = "Race \nConsciousness",
-              x.label = "EOD", modx.labels = c("Low", "High")) + theme_perez()  
-  
-
-```
-
